@@ -14,7 +14,7 @@ class OrnsteinUhlenbeck(Model):
     dX(t) = mu(X,t)*dt + sigma(X,t)*dW_t
 
     where:
-        mu(X,t)    = kappa * (mu - X)
+        mu(X,t)    = alpha * (kappa - X)
         sigma(X,t) = sigma * X
     """
 
@@ -30,7 +30,7 @@ class OrnsteinUhlenbeck(Model):
         return self._params[2] * (x > -10000)
 
     def exact_density(self, x0: float, xt: float, t0: float, dt: float) -> float:
-        kappa, theta, sigma = self._params
-        mu = theta + (x0 - theta) * np.exp(-kappa * dt)
-        var = (1 - np.exp(-2 * kappa * dt)) * (sigma * sigma / (2 * kappa))
+        alpha, kappa, sigma = self._params
+        mu = kappa + (x0 - kappa) * np.exp(-alpha * dt)
+        var = (1 - np.exp(-2 * alpha * dt)) * (sigma * sigma / (2 * alpha))
         return norm.pdf(xt, loc=mu, scale=np.sqrt(var))
