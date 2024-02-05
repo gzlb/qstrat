@@ -1,9 +1,11 @@
-from scipy.optimize import minimize
-import numpy as np
-from typing import Tuple 
 from dataclasses import dataclass
-from typing import Callable, List, Protocol, Type 
+from typing import Callable, List, Protocol, Tuple, Type
+
+import numpy as np
+from scipy.optimize import minimize
+
 from ing.models.models import StochasticProcess
+
 
 def ornstein_uhlenbeck_mle_estimate(x:np.array) -> Tuple[float, float, float]:
     """
@@ -36,6 +38,7 @@ def ornstein_uhlenbeck_mle_estimate(x:np.array) -> Tuple[float, float, float]:
 
 
 from scipy.optimize import minimize
+
 
 @dataclass
 class MLESolver:

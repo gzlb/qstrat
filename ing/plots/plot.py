@@ -1,7 +1,6 @@
-import plotly.graph_objects as go
-import plotly.express as px
-
 import numpy as np
+import plotly.express as px
+import plotly.graph_objects as go
 
 
 def plot_series_plotly(*args: np.ndarray, labels: list = None, title: str, xaxis_title: str, yaxis_title: str) -> None:

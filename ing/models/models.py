@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from typing import Callable, List, Protocol
+
 import numpy as np
+
 
 @dataclass
 class OrnsteinUhlenbeckParameters:

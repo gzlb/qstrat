@@ -1,22 +1,21 @@
 from typing import Union
-from scipy.special import ive
-from dataclasses import dataclass
+
 import numpy as np
+from scipy.special import ive
 
 from ing.fit.models import Model
 
-@dataclass
+
 class CIR(Model):
     """
-    Model for CIR (cox-ingersol-ross)
-    Parameters:  [kappa, mu, sigma]
+    Model for CIR (Cox-Ingersoll-Ross)
+    Parameters: [kappa, mu, sigma]
 
     dX(t) = mu(X,t)*dt + sigma(X,t)*dW_t
 
     where:
         mu(X,t)    = kappa * (mu - X)
-        sigma(X,t) = sigma * sqrt(X)         (sigma>0)
-
+        sigma(X,t) = sigma * sqrt(X)         (sigma > 0)
     """
 
     def __init__(self):
@@ -40,7 +39,7 @@ class CIR(Model):
         v = c * xt
         q = 2 * theta1 / theta3 ** 2 - 1
 
-        z = 2 * np.sqrt(u * v)  # Note: we apply exponential scaling trick
+        z = 2 * np.sqrt(u * v)
         p = c * np.exp(-(u + v) + np.abs(z)) * (v / u) ** (q / 2)
 
         z = 2 * np.sqrt(u * v)
@@ -48,12 +47,6 @@ class CIR(Model):
         return p
 
     def _set_is_positive(self, params: np.ndarray) -> bool:
-        """ CIR is always non-negative """
+        """CIR is always non-negative"""
         return True
 
-    # =======================
-    # (Optional) Overrides for numerical derivatives to improve performance
-    # =======================
-
-    def drift_t(self, x: Union[float, np.ndarray], t: float) -> Union[float, np.ndarray]:
-        return 0.0

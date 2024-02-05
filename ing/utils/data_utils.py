@@ -1,7 +1,9 @@
-import pandas as pd
+from typing import Tuple
+
 import numpy as np
-from scipy.stats import skew, kurtosis
-from typing import Tuple 
+import pandas as pd
+from scipy.stats import kurtosis, skew
+
 
 def read_excel_to_series(file_path: str) -> pd.DataFrame:
     """
