@@ -51,10 +51,6 @@ class Model(ABC):
         )  # Check if the params ensure positive density
         self._params = vals
 
-    # ==============================
-    # Exact Transition Density and Simulation Step, override when available
-    # ==============================
-
     @property
     def has_exact_density(self) -> bool:
         """Return true if the model has an exact density implemented"""
@@ -75,45 +71,6 @@ class Model(ABC):
     def exact_step(self, t: float, dt: float, x: float, dZ: float) -> float:
         """Exact Simulation Step, Implement if known (e.g., Brownian motion or GBM)"""
         raise NotImplementedError
-
-    # ==============================
-    # Derivatives (Numerical By Default)
-    # ==============================
-
-    def drift_x(self, x: float, t: float) -> float:
-        """Calculate the first spatial derivative of drift, dmu/dx"""
-        h = 1e-05
-        return (self.drift(x + h, t) - self.drift(x - h, t)) / (2 * h)
-
-    def drift_t(self, x: float, t: float) -> float:
-        """Calculate the first time derivative of drift, dmu/dt"""
-        h = 1e-05
-        return (self.drift(x, t + h) - self.drift(x, t)) / h
-
-    def drift_xx(self, x: float, t: float) -> float:
-        """Calculate the second spatial derivative of drift, d^2mu/dx^2"""
-        h = 1e-05
-        return (self.drift(x + h, t) - 2 * self.drift(x, t) + self.drift(x - h, t)) / (
-            h * h
-        )
-
-    def diffusion_x(self, x: float, t: float) -> float:
-        """Calculate the first spatial derivative of the diffusion term, dsigma/dx"""
-        h = 1e-05
-        return (self.diffusion(x + h, t) - self.diffusion(x - h, t)) / (2 * h)
-
-    def diffusion_xx(self, x: float, t: float) -> float:
-        """Calculate the second spatial derivative of the diffusion term, d^2sigma/dx^2"""
-        h = 1e-05
-        return (
-            self.diffusion(x + h, t)
-            - 2 * self.diffusion(x, t)
-            + self.diffusion(x - h, t)
-        ) / (h * h)
-
-    # ==============================
-    # Other properties
-    # ==============================
 
     @property
     def is_positive(self) -> bool:

@@ -20,6 +20,24 @@ def read_excel_to_series(file_path: str) -> pd.DataFrame:
     return df
 
 
+def strip_data(df: pd.Series, column: str) -> np.ndarray:
+    """
+    Converts a Pandas Series to a NumPy array.
+
+    Parameters:
+    - series (pd.Series): Pandas Series to be converted.
+
+    Returns:
+    - np.ndarray: NumPy array containing the data.
+    """
+    try:
+        df = df[column].values
+        return df
+    except Exception as e:
+        print(f"Error converting Series to NumPy array: {e}")
+        return []
+
+
 def series_to_numpy(series: pd.Series, column: str) -> np.ndarray:
     """
     Converts a Pandas Series to a NumPy array.
@@ -37,6 +55,7 @@ def series_to_numpy(series: pd.Series, column: str) -> np.ndarray:
     except Exception as e:
         print(f"Error converting Series to NumPy array: {e}")
         return np.array([])
+
 
 def mean_squared_error(x_1: np.ndarray, x_2: np.ndarray) -> float:
     """
@@ -77,5 +96,3 @@ def calculate_moments(data: np.ndarray) -> Tuple[float, float, float, float]:
     kurtosis_val = kurtosis(data)
 
     return mean_val, variance_val, skewness_val, kurtosis_val
-
-

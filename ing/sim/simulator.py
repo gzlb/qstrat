@@ -2,11 +2,11 @@ from typing import Union
 
 import numpy as np
 
-from ing.fit.stepper import Stepper
 from ing.models.models import Model
+from ing.sim.stepper import Stepper
 
 
-class Simulator1D(object):
+class SimulationSDE(object):
     def __init__(
         self,
         S0: float,
@@ -28,8 +28,7 @@ class Simulator1D(object):
         :param sub_step: int, (optional, default=1). If greater than 1, do multiple sub-steps on each dt interval to
             reduce bias.
         :param seed: int, the random seed (used for reproducibility of experiments)
-        :param method: str, the simulation scheme to use, e.g.:
-            "Euler", "Milstein", "Milstein2", "Exact"
+        :param method: str, the simulation scheme to use only Euler
             If set to "Default", uses the default simulation defined by the model (for example, "Exact" if it is known)
             Also allows you to supply your own stepper if desired
         """
