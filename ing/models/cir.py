@@ -31,21 +31,16 @@ class CIR(Model):
 
     def exact_density(self, x0: float, xt: float, t0: float, dt: float) -> float:
         kappa, mu, sigma = self._params
-        theta1 = kappa * mu
-        theta2 = kappa
-        theta3 = sigma
+        theta1, theta2, theta3 = kappa * mu, kappa, sigma
 
         et = np.exp(-theta2 * dt)
         c = 2 * theta2 / (theta3**2 * (1 - et))
-        u = c * x0 * et
-        v = c * xt
+        u, v = c * x0 * et, c * xt
         q = 2 * theta1 / theta3**2 - 1
 
         z = 2 * np.sqrt(u * v)
-        p = c * np.exp(-(u + v) + np.abs(z)) * (v / u) ** (q / 2)
+        p = c * np.exp(-(u + v) + np.abs(z)) * (v / u) ** (q / 2) * ive(q, z)
 
-        z = 2 * np.sqrt(u * v)
-        p *= ive(q, z)
         return p
 
     def _set_is_positive(self, params: np.ndarray) -> bool:
