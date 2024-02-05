@@ -3,7 +3,7 @@ from typing import Union
 import numpy as np
 from scipy.stats import norm
 
-from ing.fit.models import Model
+from ing.models.models import Model
 
 
 class OrnsteinUhlenbeck(Model):
@@ -24,7 +24,9 @@ class OrnsteinUhlenbeck(Model):
     def drift(self, x: Union[float, np.ndarray], t: float) -> Union[float, np.ndarray]:
         return self._params[0] * (self._params[1] - x)
 
-    def diffusion(self, x: Union[float, np.ndarray], t: float) -> Union[float, np.ndarray]:
+    def diffusion(
+        self, x: Union[float, np.ndarray], t: float
+    ) -> Union[float, np.ndarray]:
         return self._params[2] * (x > -10000)
 
     def exact_density(self, x0: float, xt: float, t0: float, dt: float) -> float:

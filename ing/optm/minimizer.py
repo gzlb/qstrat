@@ -6,11 +6,9 @@ from scipy.optimize import minimize
 
 
 class Result:
-    def __init__(self,
-                 params: np.ndarray,
-                 value: float,
-                 success: bool,
-                 message: str = "") -> None:
+    def __init__(
+        self, params: np.ndarray, value: float, success: bool, message: str = ""
+    ) -> None:
         """
         Result of optimization over parameters.
         :param params: np.ndarray, the optimal parameters
@@ -30,11 +28,11 @@ class Minimizer(ABC):
     of the abstract class, allowing you to swap in your favorite minimizer, or use
     the one provided by the framework
     """
+
     @abstractmethod
-    def minimize(self,
-                 function: Callable,
-                 bounds: List[Tuple] = None,
-                 guess: np.ndarray = None) -> Result:
+    def minimize(
+        self, function: Callable, bounds: List[Tuple] = None, guess: np.ndarray = None
+    ) -> Result:
         """
         Minimize the objectives to obtain optimal params. Main function to override
         :param function: Callable, the objective function to minimizer
@@ -47,10 +45,12 @@ class Minimizer(ABC):
 
 
 class ScipyMinimizer(Minimizer):
-    def __init__(self,
-                 method: str = 'trust-constr',
-                 tol: float = 5e-03,
-                 options: Optional[dict] = None) -> None:
+    def __init__(
+        self,
+        method: str = "trust-constr",
+        tol: float = 5e-03,
+        options: Optional[dict] = None,
+    ) -> None:
         """
         Specific minimizer which simply wraps the scipy.optimize.minimize method for convenience
         For more details see:
@@ -61,12 +61,19 @@ class ScipyMinimizer(Minimizer):
         """
         self._method: str = method  # optimization method to use
         self._tol: float = tol
-        self._options: dict = options or {'maxiter': 250, 'gtol': 1e-06, 'xtol': 1e-04, 'verbose': 1}
+        self._options: dict = options or {
+            "maxiter": 250,
+            "gtol": 1e-06,
+            "xtol": 1e-04,
+            "verbose": 1,
+        }
 
-    def minimize(self,
-                 function: Callable,
-                 bounds: Optional[List[Tuple]] = None,
-                 guess: Optional[np.ndarray] = None) -> Result:
+    def minimize(
+        self,
+        function: Callable,
+        bounds: Optional[List[Tuple]] = None,
+        guess: Optional[np.ndarray] = None,
+    ) -> Result:
         """
         Minimize the objectives to obtain optimal params. Main function to override
         :param function: Callable, the objective function to minimizer
@@ -75,12 +82,15 @@ class ScipyMinimizer(Minimizer):
         :param guess: np.ndarray, initial guess of parameters
         :return: OptResult, the result of optimization
         """
-        res = minimize(function,
-                       guess,
-                       tol=self._tol,
-                       method=self._method,
-                       bounds=bounds,
-                       options=self._options)
+        res = minimize(
+            function,
+            guess,
+            tol=self._tol,
+            method=self._method,
+            bounds=bounds,
+            options=self._options,
+        )
 
-        return Result(params=res.x, value=res.fun, success=res.success, message=res.message)
-
+        return Result(
+            params=res.x, value=res.fun, success=res.success, message=res.message
+        )

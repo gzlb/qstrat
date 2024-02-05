@@ -2,19 +2,21 @@ from typing import Union
 
 import numpy as np
 
-from ing.fit.models import Model
 from ing.fit.stepper import Stepper
+from ing.models.models import Model
 
 
 class Simulator1D(object):
-    def __init__(self,
-                 S0: float,
-                 M: int,
-                 dt: float,
-                 model: Model,
-                 sub_step: int = 5,
-                 seed: int = None,
-                 method: Union[str, Stepper] = "Default"):
+    def __init__(
+        self,
+        S0: float,
+        M: int,
+        dt: float,
+        model: Model,
+        sub_step: int = 5,
+        seed: int = None,
+        method: Union[str, Stepper] = "Default",
+    ):
         """
         Class for simulating paths of diffusion (SDE) process
         Override the sim_path method
@@ -47,7 +49,7 @@ class Simulator1D(object):
 
     @property
     def model(self) -> Model:
-        """ Access the underlying model """
+        """Access the underlying model"""
         return self._model
 
     def sim_path(self, num_paths: int = 1) -> np.ndarray:
@@ -61,9 +63,11 @@ class Simulator1D(object):
             return self._sim_substep(num_paths=num_paths)
 
         path = self._init_path(path_shape=(self._M + 1, num_paths))
-        norms = np.random.normal(loc=0., scale=1., size=(self._M, num_paths))
+        norms = np.random.normal(loc=0.0, scale=1.0, size=(self._M, num_paths))
         for i in range(self._M):
-            path[i + 1, :] = self._stepper(t=i * self._dt, dt=self._dt, x=path[i, :], dZ=norms[i, :])
+            path[i + 1, :] = self._stepper(
+                t=i * self._dt, dt=self._dt, x=path[i, :], dZ=norms[i, :]
+            )
         return path
 
     # ====================
@@ -80,18 +84,24 @@ class Simulator1D(object):
             self._method = model.default_sim_method if method == "Default" else method
             return Stepper.new_stepper(scheme=self._method, model=self.model)
         elif isinstance(method, Stepper):
-            self._method = 'custom'
+            self._method = "custom"
             return method
         else:
             raise ValueError("Unsupported stepper method")
 
     def _sim_substep(self, num_paths: int) -> np.ndarray:
-        """ simulate using the sub-stepping routine (reduced bias) """
+        """simulate using the sub-stepping routine (reduced bias)"""
         path = self._init_path(path_shape=(self._M * self._sub_step + 1, num_paths))
-        norms = np.random.normal(loc=0., scale=1., size=(self._M * self._sub_step, num_paths))
-        dt_sub = self._dt / self._sub_step  # divides dt into subintervals of length dt_sub
+        norms = np.random.normal(
+            loc=0.0, scale=1.0, size=(self._M * self._sub_step, num_paths)
+        )
+        dt_sub = (
+            self._dt / self._sub_step
+        )  # divides dt into subintervals of length dt_sub
 
         for i in range(self._M * self._sub_step):
-            path[i + 1, :] = self._stepper.next(t=i * dt_sub, dt=dt_sub, x=path[i, :], dZ=norms[i, :])
+            path[i + 1, :] = self._stepper.next(
+                t=i * dt_sub, dt=dt_sub, x=path[i, :], dZ=norms[i, :]
+            )
 
-        return path[::self._sub_step]
+        return path[:: self._sub_step]

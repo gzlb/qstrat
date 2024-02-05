@@ -3,7 +3,7 @@ from typing import Union
 
 import numpy as np
 
-from ing.fit.models import Model
+from ing.models.models import Model
 
 
 class Stepper(ABC):
@@ -18,15 +18,17 @@ class Stepper(ABC):
 
     @property
     def model(self) -> Model:
-        """ Access to the underlying model """
+        """Access to the underlying model"""
         return self._model
 
     @abstractmethod
-    def next(self,
-             t: float,
-             dt: float,
-             x: Union[float, np.ndarray],
-             dZ: Union[float, np.ndarray]) -> Union[float, np.ndarray]:
+    def next(
+        self,
+        t: float,
+        dt: float,
+        x: Union[float, np.ndarray],
+        dZ: Union[float, np.ndarray],
+    ) -> Union[float, np.ndarray]:
         """
         Given the current state and random variate(s), evolve state by one step over time increment dt
 
@@ -39,12 +41,14 @@ class Stepper(ABC):
         """
         raise NotImplementedError
 
-    def __call__(self,
-                 t: float,
-                 dt: float,
-                 x: Union[float, np.ndarray],
-                 dZ: Union[float, np.ndarray]) -> Union[float, np.ndarray]:
-        """ Same as a call to next() """
+    def __call__(
+        self,
+        t: float,
+        dt: float,
+        x: Union[float, np.ndarray],
+        dZ: Union[float, np.ndarray],
+    ) -> Union[float, np.ndarray]:
+        """Same as a call to next()"""
         return self.next(t=t, dt=dt, x=x, dZ=dZ)
 
     @staticmethod
@@ -76,11 +80,13 @@ class ExactStepper(Stepper):
         """
         super().__init__(model=model)
 
-    def next(self,
-             t: float,
-             dt: float,
-             x: Union[float, np.ndarray],
-             dZ: Union[float, np.ndarray]) -> Union[float, np.ndarray]:
+    def next(
+        self,
+        t: float,
+        dt: float,
+        x: Union[float, np.ndarray],
+        dZ: Union[float, np.ndarray],
+    ) -> Union[float, np.ndarray]:
         """
         Given the current state and random variate(s), evolve state by one step over time increment dt
 
@@ -102,11 +108,13 @@ class EulerStepper(Stepper):
         """
         super().__init__(model=model)
 
-    def next(self,
-             t: float,
-             dt: float,
-             x: Union[float, np.ndarray],
-             dZ: Union[float, np.ndarray]) -> Union[float, np.ndarray]:
+    def next(
+        self,
+        t: float,
+        dt: float,
+        x: Union[float, np.ndarray],
+        dZ: Union[float, np.ndarray],
+    ) -> Union[float, np.ndarray]:
         """
         Given the current state and random variate(s), evolve state by one step over time increment dt
 
@@ -117,9 +125,12 @@ class EulerStepper(Stepper):
         :param dZ: float or np.ndarray, normal random variates, N(0,1), to evolve current state
         :return: next state after evolving by one step
         """
-        xp = x + self._model.drift(x, t) * dt \
-             + self._model.diffusion(x, t) * np.sqrt(dt) * dZ
-        return np.maximum(0., xp) if self._model.is_positive else xp
+        xp = (
+            x
+            + self._model.drift(x, t) * dt
+            + self._model.diffusion(x, t) * np.sqrt(dt) * dZ
+        )
+        return np.maximum(0.0, xp) if self._model.is_positive else xp
 
 
 class MilsteinStepper(Stepper):
@@ -130,11 +141,13 @@ class MilsteinStepper(Stepper):
         """
         super().__init__(model=model)
 
-    def next(self,
-             t: float,
-             dt: float,
-             x: Union[float, np.ndarray],
-             dZ: Union[float, np.ndarray]) -> Union[float, np.ndarray]:
+    def next(
+        self,
+        t: float,
+        dt: float,
+        x: Union[float, np.ndarray],
+        dZ: Union[float, np.ndarray],
+    ) -> Union[float, np.ndarray]:
         """
         Given the current state and random variate(s), evolve state by one step over time increment dt
 
@@ -145,10 +158,17 @@ class MilsteinStepper(Stepper):
         :param dZ: float or np.ndarray, normal random variates, N(0,1), to evolve current state
         :return: next state after evolving by one step
         """
-        xp = x + self._model.drift(x, t) * dt \
-             + self._model.diffusion(x, t) * np.sqrt(dt) * dZ \
-             + 0.5 * self._model.diffusion(x, t) * self._model.diffusion_x(x, t) * (dZ ** 2 - 1) * dt
-        return np.maximum(0., xp) if self._model.is_positive else xp
+        xp = (
+            x
+            + self._model.drift(x, t) * dt
+            + self._model.diffusion(x, t) * np.sqrt(dt) * dZ
+            + 0.5
+            * self._model.diffusion(x, t)
+            * self._model.diffusion_x(x, t)
+            * (dZ**2 - 1)
+            * dt
+        )
+        return np.maximum(0.0, xp) if self._model.is_positive else xp
 
 
 class Milstein2Stepper(Stepper):
@@ -159,11 +179,13 @@ class Milstein2Stepper(Stepper):
         """
         super().__init__(model=model)
 
-    def next(self,
-             t: float,
-             dt: float,
-             x: Union[float, np.ndarray],
-             dZ: Union[float, np.ndarray]) -> Union[float, np.ndarray]:
+    def next(
+        self,
+        t: float,
+        dt: float,
+        x: Union[float, np.ndarray],
+        dZ: Union[float, np.ndarray],
+    ) -> Union[float, np.ndarray]:
         """
         Given the current state and random variate(s), evolve state by one step over time increment dt
 
@@ -175,17 +197,22 @@ class Milstein2Stepper(Stepper):
         :return: next state after evolving by one step
         """
         sig = self._model.diffusion(x, t)
-        sig2 = sig ** 2
+        sig2 = sig**2
         sig_x = self._model.diffusion_x(x, t)
         sig_xx = self._model.diffusion_xx(x, t)
         mu = self._model.drift(x, t)
         mu_x = self._model.drift_x(x, t)
         mu_xx = self._model.drift_xx(x, t)
 
-        xp = x + (mu - 0.5 * sig * sig_x) * dt \
-             + sig * dZ * np.sqrt(dt) \
-             + 0.5 * sig * sig_x * dt * dZ ** 2 \
-             + dt ** 1.5 * (0.5 * mu * sig_x + 0.5 * mu_x * sig + 0.25 * sig2 * sig_xx) * dZ \
-             + dt ** 2 * (0.5 * mu * mu_x + 0.25 * mu_xx * sig2)
+        xp = (
+            x
+            + (mu - 0.5 * sig * sig_x) * dt
+            + sig * dZ * np.sqrt(dt)
+            + 0.5 * sig * sig_x * dt * dZ**2
+            + dt**1.5
+            * (0.5 * mu * sig_x + 0.5 * mu_x * sig + 0.25 * sig2 * sig_xx)
+            * dZ
+            + dt**2 * (0.5 * mu * mu_x + 0.25 * mu_xx * sig2)
+        )
 
-        return np.maximum(0., xp) if self._model.is_positive else xp
+        return np.maximum(0.0, xp) if self._model.is_positive else xp

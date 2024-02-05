@@ -3,7 +3,7 @@ from typing import Union
 import numpy as np
 from scipy.special import ive
 
-from ing.fit.models import Model
+from ing.models.models import Model
 
 
 class CIR(Model):
@@ -24,7 +24,9 @@ class CIR(Model):
     def drift(self, x: Union[float, np.ndarray], t: float) -> Union[float, np.ndarray]:
         return self._params[0] * (self._params[1] - x)
 
-    def diffusion(self, x: Union[float, np.ndarray], t: float) -> Union[float, np.ndarray]:
+    def diffusion(
+        self, x: Union[float, np.ndarray], t: float
+    ) -> Union[float, np.ndarray]:
         return self._params[2] * np.sqrt(x)
 
     def exact_density(self, x0: float, xt: float, t0: float, dt: float) -> float:
@@ -34,10 +36,10 @@ class CIR(Model):
         theta3 = sigma
 
         et = np.exp(-theta2 * dt)
-        c = 2 * theta2 / (theta3 ** 2 * (1 - et))
+        c = 2 * theta2 / (theta3**2 * (1 - et))
         u = c * x0 * et
         v = c * xt
-        q = 2 * theta1 / theta3 ** 2 - 1
+        q = 2 * theta1 / theta3**2 - 1
 
         z = 2 * np.sqrt(u * v)
         p = c * np.exp(-(u + v) + np.abs(z)) * (v / u) ** (q / 2)
@@ -49,4 +51,3 @@ class CIR(Model):
     def _set_is_positive(self, params: np.ndarray) -> bool:
         """CIR is always non-negative"""
         return True
-

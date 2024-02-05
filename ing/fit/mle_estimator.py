@@ -3,8 +3,8 @@ from typing import List, Tuple
 import numpy as np
 
 from ing.fit.ll_estimator import LikelihoodEstimator
-from ing.fit.minimizer import Minimizer, ScipyMinimizer
 from ing.fit.transition_density import TransitionDensity
+from ing.optm.minimizer import Minimizer, ScipyMinimizer
 
 
 class MLE(LikelihoodEstimator):

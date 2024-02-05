@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from ing.fit.models import Model
+from ing.models.models import Model
 
 
 class TransitionDensity(ABC):
