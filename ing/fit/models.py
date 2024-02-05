@@ -1,11 +1,13 @@
 from abc import ABC, abstractmethod
-from typing import Optional, Union
+from typing import Optional
 
 import numpy as np
 
 
 class Model(ABC):
-    def __init__(self, has_exact_density: bool = False, default_sim_method: str = "Milstein"):
+    def __init__(
+        self, has_exact_density: bool = False, default_sim_method: str = "Milstein"
+    ):
         """
         Base 1D model for SDE, defined by
 
@@ -17,17 +19,19 @@ class Model(ABC):
         """
         self._has_exact_density = has_exact_density
         self._params: Optional[np.ndarray] = None
-        self._positive = False  # updated when params are set, indicates positivity of process
+        self._positive = (
+            False  # updated when params are set, indicates positivity of process
+        )
         self._default_sim_method = default_sim_method
 
     @abstractmethod
-    def drift(self, x: Union[float, np.ndarray], t: Union[float, np.ndarray]) -> Union[float, np.ndarray]:
-        """ The drift term of the model """
+    def drift(self, x: float, t: float) -> float:
+        """The drift term of the model"""
         raise NotImplementedError
 
     @abstractmethod
-    def diffusion(self, x: Union[float, np.ndarray], t: Union[float, np.ndarray]) -> Union[float, np.ndarray]:
-        """ The diffusion term of the model """
+    def diffusion(self, x: float, t: float) -> float:
+        """The diffusion term of the model"""
         raise NotImplementedError
 
     # ==============================
@@ -36,13 +40,15 @@ class Model(ABC):
 
     @property
     def params(self) -> np.ndarray:
-        """ Access the parameters """
+        """Access the parameters"""
         return self._params
 
     @params.setter
     def params(self, vals: np.ndarray):
-        """ Set parameters, used by fitter to move through param space """
-        self._positive = self._set_is_positive(params=vals)  # Check if the params ensure positive density
+        """Set parameters, used by fitter to move through param space"""
+        self._positive = self._set_is_positive(
+            params=vals
+        )  # Check if the params ensure positive density
         self._params = vals
 
     # ==============================
@@ -51,7 +57,7 @@ class Model(ABC):
 
     @property
     def has_exact_density(self) -> bool:
-        """ Return true if the model has an exact density implemented """
+        """Return true if the model has an exact density implemented"""
         return self._has_exact_density
 
     def exact_density(self, x0: float, xt: float, t0: float, dt: float) -> float:
@@ -66,38 +72,44 @@ class Model(ABC):
         """
         raise NotImplementedError
 
-    def exact_step(self, t: float, dt: float, x: Union[float, np.ndarray], dZ: Union[float, np.ndarray]) -> Union[float, np.ndarray]:
-        """ Exact Simulation Step, Implement if known (e.g., Brownian motion or GBM) """
+    def exact_step(self, t: float, dt: float, x: float, dZ: float) -> float:
+        """Exact Simulation Step, Implement if known (e.g., Brownian motion or GBM)"""
         raise NotImplementedError
 
     # ==============================
     # Derivatives (Numerical By Default)
     # ==============================
 
-    def drift_x(self, x: Union[float, np.ndarray], t: float) -> Union[float, np.ndarray]:
-        """ Calculate the first spatial derivative of drift, dmu/dx """
+    def drift_x(self, x: float, t: float) -> float:
+        """Calculate the first spatial derivative of drift, dmu/dx"""
         h = 1e-05
         return (self.drift(x + h, t) - self.drift(x - h, t)) / (2 * h)
 
-    def drift_t(self, x: Union[float, np.ndarray], t: float) -> Union[float, np.ndarray]:
-        """ Calculate the first time derivative of drift, dmu/dt """
+    def drift_t(self, x: float, t: float) -> float:
+        """Calculate the first time derivative of drift, dmu/dt"""
         h = 1e-05
         return (self.drift(x, t + h) - self.drift(x, t)) / h
 
-    def drift_xx(self, x: Union[float, np.ndarray], t: float) -> Union[float, np.ndarray]:
-        """ Calculate the second spatial derivative of drift, d^2mu/dx^2 """
+    def drift_xx(self, x: float, t: float) -> float:
+        """Calculate the second spatial derivative of drift, d^2mu/dx^2"""
         h = 1e-05
-        return (self.drift(x + h, t) - 2 * self.drift(x, t) + self.drift(x - h, t)) / (h * h)
+        return (self.drift(x + h, t) - 2 * self.drift(x, t) + self.drift(x - h, t)) / (
+            h * h
+        )
 
-    def diffusion_x(self, x: Union[float, np.ndarray], t: float) -> Union[float, np.ndarray]:
-        """ Calculate the first spatial derivative of the diffusion term, dsigma/dx """
+    def diffusion_x(self, x: float, t: float) -> float:
+        """Calculate the first spatial derivative of the diffusion term, dsigma/dx"""
         h = 1e-05
         return (self.diffusion(x + h, t) - self.diffusion(x - h, t)) / (2 * h)
 
-    def diffusion_xx(self, x: Union[float, np.ndarray], t: float) -> Union[float, np.ndarray]:
-        """ Calculate the second spatial derivative of the diffusion term, d^2sigma/dx^2 """
+    def diffusion_xx(self, x: float, t: float) -> float:
+        """Calculate the second spatial derivative of the diffusion term, d^2sigma/dx^2"""
         h = 1e-05
-        return (self.diffusion(x + h, t) - 2 * self.diffusion(x, t) + self.diffusion(x - h, t)) / (h * h)
+        return (
+            self.diffusion(x + h, t)
+            - 2 * self.diffusion(x, t)
+            + self.diffusion(x - h, t)
+        ) / (h * h)
 
     # ==============================
     # Other properties
@@ -105,12 +117,12 @@ class Model(ABC):
 
     @property
     def is_positive(self) -> bool:
-        """ Check if the model has non-negative paths, given the currently set parameters """
+        """Check if the model has non-negative paths, given the currently set parameters"""
         return self._positive
 
     @property
     def default_sim_method(self) -> str:
-        """ Default method used for simulation """
+        """Default method used for simulation"""
         return self._default_sim_method
 
     # ==============================

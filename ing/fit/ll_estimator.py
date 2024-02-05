@@ -1,5 +1,5 @@
 from abc import abstractmethod
-from typing import Callable, List, Tuple, Union
+from typing import Callable, List, Tuple
 
 import numpy as np
 
@@ -9,13 +9,15 @@ from ing.fit.models import Model
 
 
 class LikelihoodEstimator(Estimator):
-    def __init__(self,
-                 sample: np.ndarray,
-                 param_bounds: List[Tuple],
-                 dt: Union[float, np.ndarray],
-                 model: Model,
-                 minimizer: Minimizer = ScipyMinimizer(),
-                 t0: Union[float, np.ndarray] = 0):
+    def __init__(
+        self,
+        sample: np.ndarray,
+        param_bounds: List[Tuple],
+        dt: float,
+        model: Model,
+        minimizer: Minimizer = ScipyMinimizer(),
+        t0: float = 0,
+    ):
         """
         Abstract base class for Diffusion Estimator
         :param sample: np.ndarray, a univariate time series sample from the diffusion (ascending order of time)
@@ -31,8 +33,12 @@ class LikelihoodEstimator(Estimator):
             then this doesn't matter. Else, it's the set of times at which to evaluate the drift and diffusion
              coefficients
         """
-        super().__init__(sample=sample, param_bounds=param_bounds, dt=dt, model=model, t0=t0)
-        self._min_prob: float = 1e-30  # used to floor probabilities when evaluating the log
+        super().__init__(
+            sample=sample, param_bounds=param_bounds, dt=dt, model=model, t0=t0
+        )
+        self._min_prob: float = (
+            1e-30  # used to floor probabilities when evaluating the log
+        )
         self._minimizer: Minimizer = minimizer
 
     def estimate_params(self, params0: np.ndarray) -> EstimatedResult:
@@ -41,7 +47,9 @@ class LikelihoodEstimator(Estimator):
         :param params0: array, the initial guess params
         :return: EstimatedResult, the estimated params and final likelihood
         """
-        return self._estimate_params(params0=params0, likelihood=self.log_likelihood_negative)
+        return self._estimate_params(
+            params0=params0, likelihood=self.log_likelihood_negative
+        )
 
     @abstractmethod
     def log_likelihood_negative(self, params: np.ndarray) -> float:
@@ -58,7 +66,9 @@ class LikelihoodEstimator(Estimator):
     # Private
     # ==================
 
-    def _estimate_params(self, params0: np.ndarray, likelihood: Callable) -> EstimatedResult:
+    def _estimate_params(
+        self, params0: np.ndarray, likelihood: Callable
+    ) -> EstimatedResult:
         """
         Main estimation function
         :param params0: array, the initial guess params
@@ -67,12 +77,14 @@ class LikelihoodEstimator(Estimator):
         print(f"Initial Params: {params0}")
         print(f"Initial Likelihood: {-likelihood(params0)}")
 
-        res = self._minimizer.minimize(function=likelihood, bounds=self._param_bounds, guess=params0)
+        res = self._minimizer.minimize(
+            function=likelihood, bounds=self._param_bounds, guess=params0
+        )
         params = res.params
 
         final_like = -res.value
         print(f"Final Params: {params}")
         print(f"Final Likelihood: {final_like}")
-        return EstimatedResult(params=params, log_like=final_like, sample_size=len(self._sample) - 1)
-
-
+        return EstimatedResult(
+            params=params, log_like=final_like, sample_size=len(self._sample) - 1
+        )

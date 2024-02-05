@@ -1,5 +1,5 @@
 from abc import ABC
-from typing import List, Tuple, Union
+from typing import List, Tuple
 
 import numpy as np
 
@@ -20,33 +20,39 @@ class EstimatedResult:
 
     @property
     def likelihood(self) -> float:
-        """ The likelihood with estimated params """
+        """The likelihood with estimated params"""
         return np.exp(self.log_like)
 
     @property
     def aic(self) -> float:
-        """ The AIC (Aikake Information Criteria) with estimated params """
+        """The AIC (Aikake Information Criteria) with estimated params"""
         return 2 * (len(self.params) - self.log_like)
 
     @property
     def bic(self) -> float:
-        """ The BIC (Bayesian Information Criteria) with estimated params """
+        """The BIC (Bayesian Information Criteria) with estimated params"""
         return len(self.params) * np.log(self.sample_size) - 2 * self.log_like
 
     def __str__(self):
-        """ String representation of the class (for pretty printing the results) """
+        """String representation of the class (for pretty printing the results)"""
         return (
-            f'\nparams      | {self.params} \n'
-            f'sample size | {self.sample_size} \n'
-            f'likelihood  | {self.log_like} \n'
-            f'AIC         | {self.aic}\n'
-            f'BIC         | {self.bic}'
+            f"\nparams      | {self.params} \n"
+            f"sample size | {self.sample_size} \n"
+            f"likelihood  | {self.log_like} \n"
+            f"AIC         | {self.aic}\n"
+            f"BIC         | {self.bic}"
         )
 
 
 class Estimator(ABC):
-    def __init__(self, sample: np.ndarray, dt: Union[float, np.ndarray],
-                 model: Model, param_bounds: List[Tuple], t0: Union[float, np.ndarray] = 0):
+    def __init__(
+        self,
+        sample: np.ndarray,
+        dt: float,
+        model: Model,
+        param_bounds: List[Tuple],
+        t0: float = 0,
+    ):
         """
         Abstract base class for Diffusion Estimator
         :param sample: np.ndarray, a univariate time series sample from the diffusion (ascending order of time)
@@ -67,15 +73,23 @@ class Estimator(ABC):
 
         if isinstance(dt, np.ndarray):
             if len(dt) != len(sample) - 1:
-                raise ValueError("If you supply a sequence of dt, it must be the same size as the sample - 1")
+                raise ValueError(
+                    "If you supply a sequence of dt, it must be the same size as the sample - 1"
+                )
             if len(dt.shape) != len(self._sample.shape):
-                raise ValueError("The second dimension of the dt and sample vectors must agree, should be 1")
+                raise ValueError(
+                    "The second dimension of the dt and sample vectors must agree, should be 1"
+                )
 
         if isinstance(t0, np.ndarray):
             if len(t0) != len(sample) - 1:
-                raise ValueError("If you supply a sequence of t0, it must be the same size as the sample - 1")
+                raise ValueError(
+                    "If you supply a sequence of t0, it must be the same size as the sample - 1"
+                )
             if len(t0.shape) != len(self._sample.shape):
-                raise ValueError("The second dimension of the t0 and sample vectors must agree, should be 1")
+                raise ValueError(
+                    "The second dimension of the t0 and sample vectors must agree, should be 1"
+                )
 
     def estimate_params(self, params0: np.ndarray) -> EstimatedResult:
         """

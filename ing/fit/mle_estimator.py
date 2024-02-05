@@ -1,4 +1,4 @@
-from typing import List, Tuple, Union
+from typing import List, Tuple
 
 import numpy as np
 
@@ -7,13 +7,18 @@ from ing.fit.minimizer import Minimizer, ScipyMinimizer
 from ing.fit.transition_density import TransitionDensity
 
 
-class AnalyticalMLE(LikelihoodEstimator):
-    def __init__(self, sample: np.ndarray, param_bounds: List[Tuple], dt: Union[float, np.ndarray],
-                 density: TransitionDensity, minimizer: Minimizer = ScipyMinimizer(),
-                 t0: Union[float, np.ndarray] = 0):
+class MLE(LikelihoodEstimator):
+    def __init__(
+        self,
+        sample: np.ndarray,
+        param_bounds: List[Tuple],
+        dt: float,
+        density: TransitionDensity,
+        minimizer: Minimizer = ScipyMinimizer(),
+        t0: float = 0,
+    ):
         """
         Maximum likelihood estimator based on some analytical representation for the transition density.
-        e.g. ExactDensity, EulerDensity, ShojiOzakiDensity, etc.
         :param sample: np.ndarray, a single path draw from some theoretical model
         :param param_bounds: List[Tuple], one tuple (lower, upper) of bounds for each parameter
         :param dt: float, time step (time between diffusion steps)
@@ -25,15 +30,28 @@ class AnalyticalMLE(LikelihoodEstimator):
             then this doesn't matter. Else, it's the set of times at which to evaluate the drift and diffusion
              coefficients
         """
-        super().__init__(sample=sample, param_bounds=param_bounds, dt=dt, model=density.model,
-                         minimizer=minimizer, t0=t0)
+        super().__init__(
+            sample=sample,
+            param_bounds=param_bounds,
+            dt=dt,
+            model=density.model,
+            minimizer=minimizer,
+            t0=t0,
+        )
         self._density = density
 
     def log_likelihood_negative(self, params: np.ndarray) -> float:
         self._model.params = params
-        return -np.sum(np.log(np.maximum(self._min_prob,
-                                         self._density(x0=self._sample[:-1],
-                                                       xt=self._sample[1:],
-                                                       t0=self._t0,
-                                                       dt=self._dt))))
-
+        return -np.sum(
+            np.log(
+                np.maximum(
+                    self._min_prob,
+                    self._density(
+                        x0=self._sample[:-1],
+                        xt=self._sample[1:],
+                        t0=self._t0,
+                        dt=self._dt,
+                    ),
+                )
+            )
+        )

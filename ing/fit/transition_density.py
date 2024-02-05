@@ -1,7 +1,4 @@
 from abc import ABC, abstractmethod
-from typing import Union
-
-import numpy as np
 
 from ing.fit.models import Model
 
@@ -18,15 +15,11 @@ class TransitionDensity(ABC):
 
     @property
     def model(self) -> Model:
-        """ Access to the underlying model """
+        """Access to the underlying model"""
         return self._model
 
     @abstractmethod
-    def __call__(self,
-                 x0: Union[float, np.ndarray],
-                 xt: Union[float, np.ndarray],
-                 t0: Union[float, np.ndarray],
-                 dt: Union[float, np.ndarray]) -> Union[float, np.ndarray]:
+    def __call__(self, x0: float, xt: float, t0: float, dt: float) -> float:
         """
         The transition density evaluated at these arguments
         :param x0: float or array, the current value
@@ -47,11 +40,7 @@ class ExactDensity(TransitionDensity):
         """
         super().__init__(model=model)
 
-    def __call__(self,
-                 x0: Union[float, np.ndarray],
-                 xt: Union[float, np.ndarray],
-                 t0: Union[float, np.ndarray],
-                 dt: float) -> Union[float, np.ndarray]:
+    def __call__(self, x0: float, xt: float, t0: float, dt: float) -> float:
         """
         The exact transition density (when applicable)
         Note: this will raise an exception if the model does not implement exact_density
@@ -63,9 +52,3 @@ class ExactDensity(TransitionDensity):
         :return: probability (the same dimension as x0 and xt)
         """
         return self._model.exact_density(x0=x0, xt=xt, t0=t0, dt=dt)
-
-
-
-
-
-
