@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "ing"
+version = "0.1.0"
+description = ""
+authors = ["burak <burakguzel.99@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11.3"
+numpy = "^1.26.3"
+pandas = "^2.2.0"
+plotly = "^5.18.0"
+scipy = "^1.12.0"
+black = "^24.1.1"
+flake8 = "^7.0.0"
+wheel = "^0.42.0"
+nbformat = "^5.9.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
