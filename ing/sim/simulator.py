@@ -3,7 +3,7 @@ from typing import Union
 import numpy as np
 
 from ing.models.models import Model
-from ing.sim.scheme import Stepper
+from ing.sim.scheme import Scheme
 
 
 class SimulationSDE(object):
@@ -15,7 +15,7 @@ class SimulationSDE(object):
         model: Model,
         sub_step: int = 5,
         seed: int = None,
-        method: Union[str, Stepper] = "Default",
+        method: Union[str, Scheme] = "Default",
     ):
         """
         Class for simulating paths of diffusion (SDE) process
@@ -78,11 +78,11 @@ class SimulationSDE(object):
         path[0, :] = self._S0
         return path
 
-    def _make_stepper(self, method: Union[str, Stepper], model: Model) -> Stepper:
+    def _make_stepper(self, method: Union[str, Scheme], model: Model) -> Scheme:
         if isinstance(method, str):
             self._method = model.default_sim_method if method == "Default" else method
-            return Stepper.new_stepper(scheme=self._method, model=self.model)
-        elif isinstance(method, Stepper):
+            return Scheme.new_scheme(scheme=self._method, model=self.model)
+        elif isinstance(method, Scheme):
             self._method = "custom"
             return method
         else:
