@@ -1,3 +1,4 @@
+from pprint import pprint
 from typing import Tuple
 
 import numpy as np
@@ -95,4 +96,68 @@ def calculate_moments(data: np.ndarray) -> Tuple[float, float, float, float]:
     skewness_val = skew(data)
     kurtosis_val = kurtosis(data)
 
+    moments = {
+        "Mean": mean_val,
+        "Variance": variance_val,
+        "Skewness": skewness_val,
+        "Kurtosis": kurtosis_val,
+    }
+
+    pprint(moments)
+
     return mean_val, variance_val, skewness_val, kurtosis_val
+
+
+def conditional_expectation(
+    data: pd.Series,
+    model: pd.Series,
+    starting_point: float,
+    target_level: float,
+    T: int,
+) -> float:
+    """
+    Compute numerically the conditional expectation of the spread reaching a certain level
+    in a given amount of time T from a chosen starting point.
+
+    Parameters:
+    data (pd.Series): Real data containing the spread values.
+    model (pd.Series): Model fit containing the predicted spread values.
+    starting_point (float): Starting point for the spread.
+    target_level (float): The level to be reached.
+    T (int): Number of periods.
+
+    Returns:
+    float: Conditional expectation of the spread reaching the target level in T periods.
+    """
+
+    simulated_spread = model[:T]
+    conditional_expectation = np.mean(simulated_spread >= target_level)
+
+    return conditional_expectation
+
+
+def expected_time_to_target(
+    data: pd.Series,
+    model: pd.Series,
+    starting_point: float,
+    target_level: float,
+    max_periods: int,
+) -> int:
+    """
+    Compute numerically the expected time (number of periods) it takes for the process to
+    hit a certain level from a given starting point.
+
+    Parameters:
+    data (pd.Series): Real data containing the spread values.
+    model (pd.Series): Model fit containing the predicted spread values.
+    starting_point (float): Starting point for the spread.
+    target_level (float): The level to be reached.
+    max_periods (int): Maximum number of periods to simulate.
+
+    Returns:
+    int: Expected time (number of periods) to hit the target level.
+    """
+
+    time_to_target = np.argmax(model >= target_level)
+
+    return time_to_target
