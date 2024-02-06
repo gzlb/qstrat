@@ -1,5 +1,5 @@
 from pprint import pprint
-from typing import Tuple
+from typing import Tuple, Union
 
 import numpy as np
 import pandas as pd
@@ -109,11 +109,7 @@ def calculate_moments(data: np.ndarray) -> Tuple[float, float, float, float]:
 
 
 def conditional_expectation(
-    data: pd.Series,
-    model: pd.Series,
-    starting_point: float,
-    target_level: float,
-    T: int,
+    data: pd.Series, target_level: float, starting_point: float, T: int
 ) -> float:
     """
     Compute numerically the conditional expectation of the spread reaching a certain level
@@ -130,34 +126,20 @@ def conditional_expectation(
     float: Conditional expectation of the spread reaching the target level in T periods.
     """
 
-    simulated_spread = model[:T]
+    simulated_spread = data[starting_point:T]
+    print(simulated_spread)
     conditional_expectation = np.mean(simulated_spread >= target_level)
 
     return conditional_expectation
 
 
-def expected_time_to_target(
-    data: pd.Series,
-    model: pd.Series,
-    starting_point: float,
-    target_level: float,
-    max_periods: int,
-) -> int:
-    """
-    Compute numerically the expected time (number of periods) it takes for the process to
-    hit a certain level from a given starting point.
-
-    Parameters:
-    data (pd.Series): Real data containing the spread values.
-    model (pd.Series): Model fit containing the predicted spread values.
-    starting_point (float): Starting point for the spread.
-    target_level (float): The level to be reached.
-    max_periods (int): Maximum number of periods to simulate.
-
-    Returns:
-    int: Expected time (number of periods) to hit the target level.
-    """
-
-    time_to_target = np.argmax(model >= target_level)
-
-    return time_to_target
+def expected_time_to_hit_target(
+    data: pd.Series, target_level: float, starting_point: int = 0
+) -> Union[int, float]:
+    above_target = data > target_level
+    hits = above_target.cumsum()
+    hit_indices = np.where(hits == 1)[0]
+    hit_indices = hit_indices[hit_indices >= starting_point]
+    if len(hit_indices) == 0:
+        return np.nan  # Target level not reached
+    return hit_indices[0]
