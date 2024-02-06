@@ -26,27 +26,22 @@ def plot_series_plotly(
     - None
     """
     try:
-        # Truncate data if specified
         if truncate:
             min_length = min(len(series) for series in args)
             args = [series[:min_length] for series in args]
             if labels:
                 labels = labels[: len(args)]
 
-        # Create Plotly figure
         fig = go.Figure()
 
-        # If labels are not provided, generate default labels
         if labels is None:
             labels = [f"Series {i+1}" for i in range(len(args))]
 
-        # Add traces for the provided series
         for series, label in zip(args, labels):
             fig.add_trace(
                 go.Scatter(x=np.arange(len(series)), y=series, mode="lines", name=label)
             )
 
-        # Update layout
         fig.update_layout(
             title=title,
             xaxis_title=xaxis_title,
@@ -54,7 +49,6 @@ def plot_series_plotly(
             legend=dict(x=0, y=1, traceorder="normal", orientation="h"),
         )
 
-        # Show the plot
         fig.show()
 
     except Exception as e:

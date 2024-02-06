@@ -128,9 +128,8 @@ def conditional_expectation(
 
     simulated_spread = data[starting_point:T]
     print(simulated_spread)
-    conditional_expectation = np.mean(simulated_spread >= target_level)
 
-    return conditional_expectation
+    return simulated_spread[simulated_spread >= target_level]
 
 
 def expected_time_to_hit_target(
