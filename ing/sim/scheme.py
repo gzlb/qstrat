@@ -6,7 +6,7 @@ import numpy as np
 from ing.models.models import Model
 
 
-class Stepper(ABC):
+class Scheme(ABC):
     def __init__(self, model: Model):
         """
         Base Simulation Stepper class, which is responsible for implementing a single step of a time-discretization
@@ -52,7 +52,7 @@ class Stepper(ABC):
         return self.next(t=t, dt=dt, x=x, dZ=dZ)
 
     @staticmethod
-    def new_stepper(scheme: str, model: Model):
+    def new_scheme(scheme: str, model: Model):
         """
         Factory method to construct a simulation stepper according to scheme
         :param scheme: str, name of the simulation scheme, e.g.
@@ -61,13 +61,13 @@ class Stepper(ABC):
         :return: Stepper, bound to the model, for a particular scheme
         """
         if scheme == "Euler":
-            return EulerStepper(model=model)
+            return EulerScheme(model=model)
 
         else:
             raise NotImplementedError
 
 
-class ExactStepper(Stepper):
+class ExactScheme(Scheme):
     def __init__(self, model: Model):
         """
         Exact Simulation Step
@@ -95,7 +95,7 @@ class ExactStepper(Stepper):
         return self._model.exact_step(t=t, dt=dt, x=x, dZ=dZ)
 
 
-class EulerStepper(Stepper):
+class EulerScheme(Scheme):
     def __init__(self, model: Model):
         """
         Euler Simulation Step

@@ -3,7 +3,7 @@ from typing import Union
 import numpy as np
 
 from ing.models.models import Model
-from ing.sim.stepper import Stepper
+from ing.sim.scheme import Stepper
 
 
 def monte_carlo_simulation(
