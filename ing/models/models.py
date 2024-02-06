@@ -6,7 +6,7 @@ import numpy as np
 
 class Model(ABC):
     def __init__(
-        self, has_exact_density: bool = False, default_sim_method: str = "Milstein"
+        self, has_exact_density: bool = False, default_sim_method: str = "Euler"
     ):
         """
         Base 1D model for SDE, defined by

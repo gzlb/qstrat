@@ -67,6 +67,7 @@ class SimulationSDE(object):
             path[i + 1, :] = self._stepper(
                 t=i * self._dt, dt=self._dt, x=path[i, :], dZ=norms[i, :]
             )
+        path = path.flatten()
         return path
 
     # ====================

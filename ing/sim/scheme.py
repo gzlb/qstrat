@@ -56,7 +56,7 @@ class Scheme(ABC):
         """
         Factory method to construct a simulation stepper according to scheme
         :param scheme: str, name of the simulation scheme, e.g.
-            'Euler', 'Milstein', 'Milstein2', 'Exact'
+            'Euler'
         :param model: Model1D, the SDE model to which the stepper is bound
         :return: Stepper, bound to the model, for a particular scheme
         """
