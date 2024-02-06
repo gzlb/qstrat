@@ -44,14 +44,14 @@ poetry install
 ## Usage
 This project provides functionalities to analyze spread data. The notebooks are an excellent starting point to consider. The main workflow can summarized with following () steps
 
-1. Read the data, stored in the datafolder by using functionality in data_utils.py and strip it correctly to pipe it for the models
+1. Read the data, stored in the datafolder by using functionality in *data_utils.py* and strip it correctly to pipe it for the models
 2. Initialize: 
     * The parameters of the optimization (guess and boundary)
     * The discretization of the stochastic process (timestep and horizon) 
-    * The stochastic process (model) of choice (Ornstein-Uhlenbeck or CIR) 
-    * The density which belongs to the model 
-3. Pipe the variables of steps 1 and 2 in to the MLE object to run the maximum likelihood estimation
-4. Run a simulation step using the simulator 
-5. Plot the results and optionally summary statistics 
+    * The stochastic process (model) of choice (Ornstein-Uhlenbeck or CIR), by importing Ornstein-Uhlenbeck or CIR from respectively ou.py and cir.py 
+    * The density which belongs to the model, by importing ExactDensity from transition_density.py 
+3. Pipe the variables of steps 1 and 2 in to the MLE object to run the maximum likelihood estimation, by importing MLE from mle_estimator.py  
+4. Run a simulation step using the simulator, by importing Simulator from simulator.py  
+5. Plot the results and optionally summary statistics by importing the tools of data_utils.py and or plot.py 
 
 
