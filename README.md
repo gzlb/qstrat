@@ -25,9 +25,9 @@ git clone https://github.com/gzlb/ing.git
 cd ing 
 ```
 
-3. Install the project dependencies using Poetry:
+3. Install the project dependencies using pip:
 ```
-poetry install
+pip install -e . 
 ```
 
 ## Project Structure 

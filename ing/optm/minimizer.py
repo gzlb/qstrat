@@ -62,7 +62,7 @@ class ScipyMinimizer(Minimizer):
         self._method: str = method  # optimization method to use
         self._tol: float = tol
         self._options: dict = options or {
-            "maxiter": 250,
+            "maxiter": 500,
             "gtol": 1e-06,
             "xtol": 1e-04,
             "verbose": 1,

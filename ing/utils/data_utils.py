@@ -138,4 +138,5 @@ def expected_time_to_hit_target(
     hit_indices = np.argmax(data > target_level, axis=0)
     hit_indices[data[hit_indices, np.arange(data.shape[1])] <= target_level] = -1
     hit_indices[hit_indices < starting_point] = -1
+    hit_indices[hit_indices == -1] = 0
     return hit_indices
