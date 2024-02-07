@@ -1,5 +1,5 @@
 from pprint import pprint
-from typing import Tuple, Union
+from typing import Tuple
 
 import numpy as np
 import pandas as pd
@@ -133,12 +133,9 @@ def conditional_expectation(
 
 
 def expected_time_to_hit_target(
-    data: pd.Series, target_level: float, starting_point: int = 0
-) -> Union[int, float]:
-    above_target = data > target_level
-    hits = above_target.cumsum()
-    hit_indices = np.where(hits == 1)[0]
-    hit_indices = hit_indices[hit_indices >= starting_point]
-    if len(hit_indices) == 0:
-        return np.nan  # Target level not reached
-    return hit_indices[0]
+    data: np.ndarray, target_level: float, starting_point: int = 0
+) -> np.ndarray:
+    hit_indices = np.argmax(data > target_level, axis=0)
+    hit_indices[data[hit_indices, np.arange(data.shape[1])] <= target_level] = -1
+    hit_indices[hit_indices < starting_point] = -1
+    return hit_indices
