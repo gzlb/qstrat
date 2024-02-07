@@ -24,8 +24,13 @@ git clone https://github.com/gzlb/ing.git
 ```
 cd ing 
 ```
+3. We will use Poetry to manage the virtual environment. Run following commands as such 
 
-3. Install the project dependencies using pip:
+```
+poetry install
+poetry shell 
+```
+4. Install the project dependencies using pip:
 ```
 pip install -e . 
 ```
