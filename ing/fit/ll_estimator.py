@@ -55,8 +55,6 @@ class LikelihoodEstimator(Estimator):
     def log_likelihood_negative(self, params: np.ndarray) -> float:
         """
         -Log(Likelihood) function, we take negative so we can minimize it (to get maximum likelihood)
-        NOTE: each call to this method sets the params during the estimation process, and evaluates the likelihood
-
         :param params: array, the params at which to evaluate -Log(Likelihood)
         :return: float, the -Log(Likelihood) for these parameters
         """
