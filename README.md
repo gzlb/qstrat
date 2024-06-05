@@ -17,12 +17,12 @@ To use this project, follow these steps:
 1. Clone the repository from GitHub:
 
 ```
-git clone https://github.com/gzlb/ing.git
+git clone https://github.com/gzlb/qstrat.git
 ```
 
 2. Navigate to the folder 
 ```
-cd ing 
+cd qstrat 
 ```
 3. We will use Poetry to manage the virtual environment. Run following commands as such 
 
@@ -39,7 +39,7 @@ pip install -e .
 
 - data: Contains spreadsheets with spread data.
 - dist: Contains distribution files.
-- ing: Main package directory.
+- qstrat: Main package directory.
 - fit: Module for fitting models to data using maximum likelihood estimation.
 - models: Module for defining financial models (currently support Ornstein-Uhlenbeck and Cox-Ingersoll-Ross).
 - optm: Module for optimization functions.
