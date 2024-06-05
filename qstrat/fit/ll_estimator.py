@@ -3,9 +3,9 @@ from typing import Callable, List, Tuple
 
 import numpy as np
 
-from ing.models.models import Model
-from ing.optm.estimator import EstimatedResult, Estimator
-from ing.optm.minimizer import Minimizer, ScipyMinimizer
+from qstrat.models.models import Model
+from qstrat.optm.estimator import EstimatedResult, Estimator
+from qstrat.optm.minimizer import Minimizer, ScipyMinimizer
 
 
 class LikelihoodEstimator(Estimator):

@@ -3,7 +3,7 @@ from typing import Union
 import numpy as np
 from scipy.stats import norm
 
-from ing.models.models import Model
+from qstrat.models.models import Model
 
 
 class OrnsteinUhlenbeck(Model):

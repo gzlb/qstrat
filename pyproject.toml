@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "ing"
+name = "qstrat"
 version = "0.1.0"
 description = ""
 authors = ["burak <burakguzel.99@gmail.com>"]

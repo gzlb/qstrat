@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from ing.models.models import Model
+from qstrat.models.models import Model
 
 
 class TransitionDensity(ABC):

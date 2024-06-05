@@ -3,7 +3,7 @@ from typing import List, Tuple
 
 import numpy as np
 
-from ing.models.models import Model
+from qstrat.models.models import Model
 
 
 class EstimatedResult:
