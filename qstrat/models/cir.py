@@ -3,7 +3,7 @@ from typing import Union
 import numpy as np
 from scipy.special import ive
 
-from ing.models.models import Model
+from qstrat.models.models import Model
 
 
 class CIR(Model):

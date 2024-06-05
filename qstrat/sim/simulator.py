@@ -2,8 +2,8 @@ from typing import Union
 
 import numpy as np
 
-from ing.models.models import Model
-from ing.sim.scheme import Scheme
+from qstrat.models.models import Model
+from qstrat.sim.scheme import Scheme
 
 
 class SimulationSDE(object):

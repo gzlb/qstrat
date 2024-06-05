@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "ing"
+name = "qstrat"
 version = "0.1.0"
 description = ""
 authors = ["burak <burakguzel.99@gmail.com>"]
@@ -16,7 +16,6 @@ flake8 = "^7.0.0"
 wheel = "^0.42.0"
 nbformat = "^5.9.2"
 isort = "^5.13.2"
-
 
 [build-system]
 requires = ["poetry-core"]

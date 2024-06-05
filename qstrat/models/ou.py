@@ -3,7 +3,7 @@ from typing import Union
 import numpy as np
 from scipy.stats import norm
 
-from ing.models.models import Model
+from qstrat.models.models import Model
 
 
 class OrnsteinUhlenbeck(Model):
@@ -33,4 +33,5 @@ class OrnsteinUhlenbeck(Model):
         alpha, kappa, sigma = self._params
         mu = kappa + (x0 - kappa) * np.exp(-alpha * dt)
         var = (1 - np.exp(-2 * alpha * dt)) * (sigma * sigma / (2 * alpha))
+
         return norm.pdf(xt, loc=mu, scale=np.sqrt(var))
